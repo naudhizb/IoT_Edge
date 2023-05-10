@@ -1,6 +1,6 @@
 /* vim: set ai et ts=4 sw=4: */
-#include "stm32l4xx_hal.h"
 #include "st7735.h"
+#include "st7735p.h"
 
 #define DELAY 0x80
 
@@ -83,30 +83,6 @@ static const uint8_t
     ST7735_DISPON ,    DELAY, //  4: Main screen turn on, no args w/delay
       100 };                  //     100 ms delay
 
-static void ST7735_Select() {
-    HAL_GPIO_WritePin(ST7735_CS_GPIO_Port, ST7735_CS_Pin, GPIO_PIN_RESET);
-}
-
-void ST7735_Unselect() {
-    HAL_GPIO_WritePin(ST7735_CS_GPIO_Port, ST7735_CS_Pin, GPIO_PIN_SET);
-}
-
-static void ST7735_Reset() {
-    HAL_GPIO_WritePin(ST7735_RES_GPIO_Port, ST7735_RES_Pin, GPIO_PIN_RESET);
-    HAL_Delay(5);
-    HAL_GPIO_WritePin(ST7735_RES_GPIO_Port, ST7735_RES_Pin, GPIO_PIN_SET);
-}
-
-static void ST7735_WriteCommand(uint8_t cmd) {
-    HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&ST7735_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
-}
-
-static void ST7735_WriteData(uint8_t* buff, size_t buff_size) {
-    HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_SET);
-    HAL_SPI_Transmit(&ST7735_SPI_PORT, buff, buff_size, HAL_MAX_DELAY);
-}
-
 static void ST7735_ExecuteCommandList(const uint8_t *addr) {
     uint8_t numCommands, numArgs;
     uint16_t ms;
@@ -128,7 +104,7 @@ static void ST7735_ExecuteCommandList(const uint8_t *addr) {
         if(ms) {
             ms = *addr++;
             if(ms == 255) ms = 500;
-            HAL_Delay(ms);
+            ST7735_Delay(ms);
         }
     }
 }
@@ -190,23 +166,6 @@ static void ST7735_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint
     }
 }
 
-/*
-Simpler (and probably slower) implementation:
-
-static void ST7735_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint16_t color) {
-    uint32_t i, b, j;
-
-    for(i = 0; i < font.height; i++) {
-        b = font.data[(ch - 32) * font.height + i];
-        for(j = 0; j < font.width; j++) {
-            if((b << j) & 0x8000)  {
-                ST7735_DrawPixel(x + j, y + i, color);
-            } 
-        }
-    }
-}
-*/
-
 void ST7735_WriteString(uint16_t x, uint16_t y, const char* str, FontDef font, uint16_t color, uint16_t bgcolor) {
     ST7735_Select();
 
@@ -243,10 +202,9 @@ void ST7735_FillRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16
     ST7735_SetAddressWindow(x, y, x+w-1, y+h-1);
 
     uint8_t data[] = { color >> 8, color & 0xFF };
-    HAL_GPIO_WritePin(ST7735_DC_GPIO_Port, ST7735_DC_Pin, GPIO_PIN_SET);
     for(y = h; y > 0; y--) {
         for(x = w; x > 0; x--) {
-            HAL_SPI_Transmit(&ST7735_SPI_PORT, data, sizeof(data), HAL_MAX_DELAY);
+            ST7735_WriteData(data, sizeof(data));
         }
     }
 
