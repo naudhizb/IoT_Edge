@@ -48,14 +48,14 @@
 */
 
 // AliExpress/eBay 1.8" display, upside down
-/*
+
 #define ST7735_IS_160X128 1
 #define ST7735_WIDTH  128
 #define ST7735_HEIGHT 160
 #define ST7735_XSTART 0
 #define ST7735_YSTART 0
 #define ST7735_ROTATION (0)
-*/
+
 
 // WaveShare ST7735S-based 1.8" display, default orientation
 /*
@@ -158,12 +158,12 @@
 
 // mini 160x80, rotate right
 
-#define ST7735_IS_160X80 1
-#define ST7735_XSTART 1
-#define ST7735_YSTART 26
-#define ST7735_WIDTH  160
-#define ST7735_HEIGHT 80
-#define ST7735_ROTATION (ST7735_MADCTL_MY | ST7735_MADCTL_MV | ST7735_MADCTL_BGR)
+//#define ST7735_IS_160X80 1
+//#define ST7735_XSTART 1
+//#define ST7735_YSTART 26
+//#define ST7735_WIDTH  160
+//#define ST7735_HEIGHT 80
+//#define ST7735_ROTATION (ST7735_MADCTL_MY | ST7735_MADCTL_MV | ST7735_MADCTL_BGR)
 
 
 

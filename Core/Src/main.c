@@ -131,6 +131,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_USB_Init();
   /* USER CODE BEGIN 2 */
+  HAL_GPIO_WritePin(ARD_D6_GPIO_Port, ARD_D6_Pin, GPIO_PIN_SET);
   ST7735_Init();
   static uint16_t buf[60][80];
   while(1){
@@ -153,35 +154,35 @@ int main(void)
 
   	  ST7735_FillScreen(ST7735_BLACK);
   	  ST7735_WriteString(0,8, "Draw Image",Font_7x10, ST7735_BLACK, ST7735_WHITE);
-  	  ST7735_DrawImage(0,0,128,80,test_img_128x128);
+  	  ST7735_DrawImage(0,0,128,128,test_img_128x128);
   	  HAL_Delay(5000);
 
        /* Draw Image Test */
-       ST7735_WriteString(0,8, "Moving Image",Font_7x10, ST7735_BLACK, ST7735_WHITE);
-       HAL_Delay(1000);
-       static int pos = 0;
-       static int dir = 0;
-       do{
-     	  ST7735_DrawImage(pos,0,128,80,&test_img_128x128[pos][0]);
-     	  if(pos != 0){
-     		  ST7735_DrawVLine(pos-1, 0, 80, ST7735_BLACK);
-     	  }
-     	  {
-     		  ST7735_DrawVLine(pos+128+1, 0, 80, ST7735_BLACK);
-     	  }
-     	  if(!dir) pos++;
-     	  else	pos--;
-     	  if((pos == 32)|(pos == 0)) dir = !dir;
-     	  HAL_Delay(10);
-       } while(pos);
-       pos =0;
-       HAL_Delay(1000);
+//       ST7735_WriteString(0,8, "Moving Image",Font_7x10, ST7735_BLACK, ST7735_WHITE);
+//       HAL_Delay(1000);
+//       static int pos = 0;
+//       static int dir = 0;
+//       do{
+//     	  ST7735_DrawImage(pos,0,128,80,&test_img_128x128[pos][0]);
+//     	  if(pos != 0){
+//     		  ST7735_DrawVLine(pos-1, 0, 80, ST7735_BLACK);
+//     	  }
+//     	  {
+//     		  ST7735_DrawVLine(pos+128+1, 0, 80, ST7735_BLACK);
+//     	  }
+//     	  if(!dir) pos++;
+//     	  else	pos--;
+//     	  if((pos == 32)|(pos == 0)) dir = !dir;
+//     	  HAL_Delay(10);
+//       } while(pos);
+//       pos =0;
+//       HAL_Delay(1000);
 
        /* Draw Pixel Test */
        ST7735_WriteString(0,8, "Draw Pixel",Font_7x10, ST7735_BLACK, ST7735_WHITE);
        HAL_Delay(1000);
-       for(int i = 0; i < 80; i++)
-     	  for(int j = 0; j < 160; j++){
+       for(int i = 0; i < ST7735_HEIGHT; i++)
+     	  for(int j = 0; j < ST7735_WIDTH; j++){
      		  ST7735_DrawPixel(j,i,ST7735_YELLOW);
      	  }
        HAL_Delay(1000);
@@ -189,13 +190,13 @@ int main(void)
        /* Draw Line Test */
        ST7735_WriteString(0,8, "Draw HLine",Font_7x10, ST7735_BLACK, ST7735_WHITE);
        HAL_Delay(1000);
-       for(int i = 0; i < 80; i++)
+       for(int i = 0; i < ST7735_HEIGHT; i++)
      	  ST7735_DrawHLine(0,i, ST7735_WIDTH, ST7735_GREEN);
        HAL_Delay(1000);
 
        ST7735_WriteString(0,8, "Draw VLine",Font_7x10, ST7735_BLACK, ST7735_WHITE);
        HAL_Delay(1000);
-       for(int j = 0; j < 160; j++)
+       for(int j = 0; j < ST7735_WIDTH; j++)
      	  ST7735_DrawVLine(j,0, ST7735_HEIGHT, ST7735_RED);
        HAL_Delay(1000);
 

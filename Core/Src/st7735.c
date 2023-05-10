@@ -126,6 +126,10 @@ static void ST7735_SetAddressWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t 
 }
 
 void ST7735_Init() {
+	ST7735_Unselect();
+	ST7735_Reset();
+	ST7735_Delay(100);
+
     ST7735_Select();
     ST7735_Reset();
     ST7735_ExecuteCommandList(init_cmds1);
